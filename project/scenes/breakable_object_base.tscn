@@ -1,0 +1,38 @@
+[gd_scene load_steps=4 format=3 uid="uid://cfxr33pyiwvtj"]
+
+[ext_resource type="Script" path="res://scripts/breakable_object_base.gd" id="1_8nx3u"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_q7jwb"]
+radius = 0.1
+height = 0.2
+
+[sub_resource type="Curve" id="Curve_7ehx6"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+metadata/_snap_enabled = true
+
+[node name="breakable_object_base" type="RigidBody3D" groups=["kickable"]]
+script = ExtResource("1_8nx3u")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+
+[node name="break_sensor" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="break_sensor"]
+
+[node name="CPUParticles3D" type="CPUParticles3D" parent="."]
+emitting = false
+amount = 32
+one_shot = true
+explosiveness = 1.0
+mesh = SubResource("SphereMesh_q7jwb")
+spread = 180.0
+initial_velocity_min = 2.5
+initial_velocity_max = 5.0
+damping_min = 5.0
+damping_max = 5.0
+scale_amount_curve = SubResource("Curve_7ehx6")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+
+[connection signal="body_entered" from="break_sensor" to="." method="_on_break_sensor_body_entered"]
