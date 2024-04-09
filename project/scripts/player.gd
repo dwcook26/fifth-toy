@@ -15,9 +15,15 @@ var direction = Vector3()
 var gravity_direction = Vector3(0,-3,0)
 var movement = Vector3()
 
+var is_grabbing = false
+
 @onready var head = $Head
 @onready var camera = $Head/Camera3D
+@onready var raycast = $Head/RayCast3D
+@onready var grab_position = $Head/grab_position
 
+
+@onready var world = $".." #this is bad practice, but too tired to do it properly
 
 func _input(event):
 	#get mouse input for camera rotation
@@ -30,10 +36,16 @@ func _physics_process(delta):
 	#get keyboard input
 	if Input.is_action_just_pressed("ui_cancel"):
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-	if Input.is_action_just_pressed("kick"):
-		for i in $kick.get_overlapping_bodies():
-			if i.is_in_group("kickable"):
-				i.kick(global_position)
+	if Input.is_action_just_pressed("click"):
+		if is_grabbing:
+			launch()
+		else:
+			var collider = raycast.get_collider()
+			if collider != null:
+				grab(collider)
+				
+
+
 	
 	
 	direction = Vector3.ZERO
@@ -50,3 +62,27 @@ func _physics_process(delta):
 		move_and_slide()
 	
 	
+func grab(body: RigidBody3D):
+	print("okay")
+	world.remove_child(body)
+	grab_position.add_child(body)
+	body.stop(true)
+	body.position = Vector3()
+	
+	is_grabbing = true
+
+func launch():
+	var face_direction = Vector3(0,0,-1).rotated(Vector3(1,0,0),head.rotation.x).rotated(Vector3(0,1,0),rotation.y)
+	
+	
+	print(grab_position.get_children())
+	print("nokay")
+	var body = grab_position.get_child(0)
+	grab_position.remove_child(body)
+	world.add_child(body)
+	body.stop(false)
+	body.throw(face_direction)
+	body.global_position = global_position + face_direction
+	
+	is_grabbing = false
+	#okay figure out
