@@ -15,6 +15,8 @@ var direction = Vector3()
 var gravity_direction = Vector3(0,-3,0)
 var movement = Vector3()
 
+var timeSinceLastWalkCycle = 0;
+
 var is_grabbing = false
 
 @onready var head = $Head
@@ -43,10 +45,6 @@ func _physics_process(delta):
 			var collider = raycast.get_collider()
 			if collider != null:
 				grab(collider)
-				
-
-
-	
 	
 	direction = Vector3.ZERO
 	var h_rot = global_transform.basis.get_euler().y
@@ -60,7 +58,15 @@ func _physics_process(delta):
 		# TODOConverter40 looks that snap in Godot 4.0 is float, not vector like in Godot 3 - previous value `snap`
 		set_up_direction(Vector3.UP)
 		move_and_slide()
-	
+		
+		var speed := (velocity * Vector3(1, 0, 1)).length();
+		if (speed > 1):
+			var thres: float = 1250.0 * (0.736 ** float(speed));
+			if (timeSinceLastWalkCycle > thres):
+				timeSinceLastWalkCycle = 0;
+				get_node("/root/Sounds").playSound(["walk"], -20);
+			
+		timeSinceLastWalkCycle += delta * 1000;
 	
 func grab(body: RigidBody3D):
 	print("okay")
@@ -70,10 +76,11 @@ func grab(body: RigidBody3D):
 	body.position = Vector3()
 	
 	is_grabbing = true
+	
+	get_node("/root/Sounds").playSound(["pickup"]);
 
 func launch():
 	var face_direction = Vector3(0,0,-1).rotated(Vector3(1,0,0),head.rotation.x).rotated(Vector3(0,1,0),rotation.y)
-	
 	
 	print(grab_position.get_children())
 	print("nokay")
@@ -85,4 +92,6 @@ func launch():
 	body.global_position = global_position + face_direction
 	
 	is_grabbing = false
+	
+	get_node("/root/Sounds").playSound(["throw"]);
 	#okay figure out

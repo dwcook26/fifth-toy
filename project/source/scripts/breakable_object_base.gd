@@ -16,9 +16,12 @@ func damage():
 	$CPUParticles3D.restart()
 	health -= 1
 	if health <= 0:
-		shatter()
+		shatter();
+	else:
+		get_node("/root/Sounds").play3DSound(["damage", "vase"], self.position);
 
 func shatter():
+	get_node("/root/Sounds").play3DSound(["breaking", "vase"], self.position);
 	
 	stop(true)
 	model.visible = false
@@ -37,6 +40,8 @@ func _on_body_entered(body):
 			shatter()
 		else:
 			damage()
+	else:
+		get_node("/root/Sounds").play3DSound(["bounce", "vase"], self.position);
 
 func stop(stop: bool = true):
 	freeze = stop

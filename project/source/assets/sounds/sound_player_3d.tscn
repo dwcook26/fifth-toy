@@ -1,0 +1,4 @@
+[gd_scene format=3 uid="uid://d4ahs00ykr3vt"]
+
+[node name="soundPlayer" type="AudioStreamPlayer3D"]
+max_distance = 20.0

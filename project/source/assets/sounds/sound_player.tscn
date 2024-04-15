@@ -1,0 +1,3 @@
+[gd_scene format=3 uid="uid://cdas1r34upnew"]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer"]
