@@ -24,7 +24,7 @@ var is_grabbing = false
 @onready var raycast = $Head/RayCast3D
 @onready var grab_position = $Head/grab_position
 
-@onready var world = $".." #this is bad practice, but too tired to do it properly
+@onready var world = $"/root/game/breakables" #this is bad practice, but too tired to do it properly
 
 func _input(event):
 	#get mouse input for camera rotation

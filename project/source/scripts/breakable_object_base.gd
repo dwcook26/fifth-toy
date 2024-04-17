@@ -1,15 +1,20 @@
 extends RigidBody3D
 
+@export var soundName: String = "vase";
+
 @export var damage_threshold: float
 @export var shatter_threshold: float
 @export var throw_speed: float
+@export var explosion_radius: float = 0.5;
+@export var explosion_damage: float = 50;
 
 @export var max_health: int
 
 @onready var health = max_health
 
 @onready var model = $model
-@onready var world = $".."
+var isDead: bool = false;
+@onready var world: Node = $"/root/game/breakables";
 
 func damage():
 	print("jheaf")
@@ -18,14 +23,27 @@ func damage():
 	if health <= 0:
 		shatter();
 	else:
-		get_node("/root/Sounds").play3DSound(["damage", "vase"], self.position);
+		get_node("/root/Sounds").play3DSound(["damage", soundName], self.position);
 
 func shatter():
-	get_node("/root/Sounds").play3DSound(["breaking", "vase"], self.position);
+	if (isDead):
+		return;
+
+	isDead = true;
+	get_node("/root/Sounds").play3DSound(["breaking", soundName], self.position);
 	
 	stop(true)
 	model.visible = false
 	$CPUParticles3D.restart()
+	
+	if (explosion_radius > 0):
+		for child in world.get_children():
+			if (child != self && !child.isDead):
+				var distance: float = self.global_position.distance_to(child.global_position);
+				if (distance < explosion_radius):
+					var adjusted: float = (-(distance / explosion_radius) ** 4 + 1) * explosion_damage;
+					child.tryTakeDamage(adjusted);
+	
 	await $CPUParticles3D.finished
 	queue_free()
 
@@ -35,13 +53,19 @@ func throw(direction: Vector3):
 
 func _on_body_entered(body):
 	var speed = linear_velocity.length_squared()
-	if speed > damage_threshold:
-		if speed > shatter_threshold:
+	tryTakeDamage(speed);
+
+func tryTakeDamage(amt: float):
+	if (isDead):
+		return;
+		
+	if amt > damage_threshold:
+		if amt > shatter_threshold:
 			shatter()
 		else:
 			damage()
 	else:
-		get_node("/root/Sounds").play3DSound(["bounce", "vase"], self.position);
+		get_node("/root/Sounds").play3DSound(["bounce", soundName], self.position);
 
 func stop(stop: bool = true):
 	freeze = stop
