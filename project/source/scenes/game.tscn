@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://d4d8x2hdu7gej"]
+[gd_scene load_steps=19 format=3 uid="uid://d4d8x2hdu7gej"]
 
 [ext_resource type="Texture2D" uid="uid://c3341f2is0k2c" path="res://source/assets/Orange/texture_08.png" id="1_rgdtr"]
 [ext_resource type="Script" path="res://source/scripts/game.gd" id="1_xu3rd"]
@@ -8,6 +8,8 @@
 [ext_resource type="Script" path="res://source/scripts/ui.gd" id="5_q61se"]
 [ext_resource type="Texture2D" uid="uid://7pmwfk3jwet1" path="res://source/assets/UI/crosshairs/crossNone.png" id="5_xkdmp"]
 [ext_resource type="PackedScene" uid="uid://b33jvwhckqsha" path="res://source/assets/Furniture Kit/FireExtinguisher_lowpo.gltf" id="6_8rkjv"]
+[ext_resource type="FontFile" uid="uid://d3nbtsahprbcu" path="res://source/assets/UI/Kenney Future Narrow.ttf" id="9_0uw0q"]
+[ext_resource type="Script" path="res://source/scripts/score.gd" id="9_dbpyu"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_jba8v"]
 size = Vector3(10, 1, 10)
@@ -112,6 +114,7 @@ shatter_threshold = 0.5
 throw_speed = 2.0
 explosion_radius = 2.0
 explosion_damage = 200.0
+score = 500.0
 max_health = 2
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="breakables/fireExtinguisher"]
@@ -169,4 +172,57 @@ grow_vertical = 2
 scale = Vector2(0.75, 0.75)
 texture = ExtResource("5_xkdmp")
 
+[node name="score" type="Control" parent="UI" node_paths=PackedStringArray("scoreList", "scoreText")]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -61.0
+offset_top = 11.0
+offset_right = -21.0
+offset_bottom = 51.0
+grow_horizontal = 0
+script = ExtResource("9_dbpyu")
+scoreList = NodePath("change")
+scoreText = NodePath("value")
+
+[node name="Label" type="Label" parent="UI/score"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -51.0
+offset_bottom = 23.0
+grow_horizontal = 0
+theme_override_colors/font_color = Color(1, 0.811765, 0.25098, 1)
+theme_override_fonts/font = ExtResource("9_0uw0q")
+theme_override_font_sizes/font_size = 35
+text = " SCORE
+"
+horizontal_alignment = 2
+
+[node name="value" type="RichTextLabel" parent="UI/score"]
+layout_direction = 2
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -271.0
+offset_top = 34.0
+offset_bottom = 119.0
+grow_horizontal = 0
+theme_override_fonts/normal_font = ExtResource("9_0uw0q")
+theme_override_font_sizes/normal_font_size = 40
+bbcode_enabled = true
+text = "[right]0"
+scroll_active = false
+shortcut_keys_enabled = false
+
+[node name="change" type="Control" parent="UI/score"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
 [connection signal="body_entered" from="breakables/fireExtinguisher" to="breakables/fireExtinguisher" method="_on_body_entered"]
+[connection signal="damage" from="UI/score" to="UI/score" method="_on_damage"]
+[connection signal="destruction" from="UI/score" to="UI/score" method="_on_destruction"]

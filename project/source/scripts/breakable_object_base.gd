@@ -7,6 +7,7 @@ extends RigidBody3D
 @export var throw_speed: float
 @export var explosion_radius: float = 0.5;
 @export var explosion_damage: float = 50;
+@export var score: float = 1000
 
 @export var max_health: int
 
@@ -23,6 +24,7 @@ func damage():
 	if health <= 0:
 		shatter();
 	else:
+		get_node("/root/game/UI/score").damage.emit(score);
 		get_node("/root/Sounds").play3DSound(["damage", soundName], self.position);
 
 func shatter():
@@ -35,6 +37,7 @@ func shatter():
 	stop(true)
 	model.visible = false
 	$CPUParticles3D.restart()
+	get_node("/root/game/UI/score").destruction.emit(score);
 	
 	if (explosion_radius > 0):
 		for child in world.get_children():
