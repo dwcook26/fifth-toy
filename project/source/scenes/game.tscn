@@ -1,9 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://d4d8x2hdu7gej"]
+[gd_scene load_steps=11 format=3 uid="uid://d4d8x2hdu7gej"]
 
 [ext_resource type="Texture2D" uid="uid://c3341f2is0k2c" path="res://source/assets/Orange/texture_08.png" id="1_rgdtr"]
 [ext_resource type="Script" path="res://source/scripts/game.gd" id="1_xu3rd"]
 [ext_resource type="PackedScene" uid="uid://dargwp6y1uds8" path="res://source/scenes/player.tscn" id="2_pb0b1"]
 [ext_resource type="PackedScene" uid="uid://ya51d0awcf82" path="res://source/scenes/vase.tscn" id="3_xljom"]
+[ext_resource type="Script" path="res://source/scripts/ui.gd" id="5_q61se"]
+[ext_resource type="Texture2D" uid="uid://7pmwfk3jwet1" path="res://source/assets/UI/crosshairs/crossNone.png" id="5_xkdmp"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_jba8v"]
 size = Vector3(10, 1, 10)
@@ -21,17 +23,21 @@ size = Vector3(10, 1, 10)
 [node name="game" type="Node3D"]
 script = ExtResource("1_xu3rd")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="." groups=["floor"]]
+[node name="floor" type="StaticBody3D" parent="." groups=["floor"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+collision_layer = 5
+collision_mask = 5
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="floor"]
 shape = SubResource("BoxShape3D_jba8v")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="floor"]
 mesh = SubResource("BoxMesh_0t0kg")
 
 [node name="wall" type="StaticBody3D" parent="." groups=["floor"]]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 1.72279, 4.59677)
+collision_layer = 5
+collision_mask = 5
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="wall"]
 shape = SubResource("BoxShape3D_jba8v")
@@ -47,23 +53,60 @@ environment = SubResource("Environment_4aak8")
 
 [node name="vase" parent="." instance=ExtResource("3_xljom")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.722815, -1.64683)
+collision_layer = 6
+collision_mask = 6
 physics_material_override = null
 
 [node name="vase2" parent="." instance=ExtResource("3_xljom")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7104, 0.722815, -1.64683)
+collision_layer = 6
+collision_mask = 6
 physics_material_override = null
 
 [node name="vase3" parent="." instance=ExtResource("3_xljom")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.06402, 0.722815, -1.64683)
+collision_layer = 6
+collision_mask = 6
 physics_material_override = null
 
 [node name="vase4" parent="." instance=ExtResource("3_xljom")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.02856, 0.722815, -1.64683)
+collision_layer = 6
+collision_mask = 6
 physics_material_override = null
 
 [node name="vase5" parent="." instance=ExtResource("3_xljom")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.37182, 0.722815, -1.64683)
+collision_layer = 6
+collision_mask = 6
 physics_material_override = null
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -0.327152, 0.944972, 0, -0.944972, -0.327152, 0, 0.722815, -1.64683)
+
+[node name="UI" type="Control" parent="." node_paths=PackedStringArray("player")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("5_q61se")
+player = NodePath("../player")
+
+[node name="crosshair" type="TextureRect" parent="UI"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.0
+offset_top = -36.0
+offset_right = 36.0
+offset_bottom = 36.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("5_xkdmp")

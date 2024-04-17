@@ -24,7 +24,6 @@ var is_grabbing = false
 @onready var raycast = $Head/RayCast3D
 @onready var grab_position = $Head/grab_position
 
-
 @onready var world = $".." #this is bad practice, but too tired to do it properly
 
 func _input(event):
@@ -34,10 +33,12 @@ func _input(event):
 		head.rotate_x(deg_to_rad(-event.relative.y * mouse_sense))
 		
 		head.rotation.x = clamp(head.rotation.x, deg_to_rad(-89), deg_to_rad(89))
+
 func _physics_process(delta):
 	#get keyboard input
 	if Input.is_action_just_pressed("ui_cancel"):
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+
 	if Input.is_action_just_pressed("click"):
 		if is_grabbing:
 			launch()
@@ -77,7 +78,7 @@ func grab(body: RigidBody3D):
 	
 	is_grabbing = true
 	
-	get_node("/root/Sounds").playSound(["pickup"]);
+	# get_node("/root/Sounds").playSound(["pickup"]);
 
 func launch():
 	var face_direction = Vector3(0,0,-1).rotated(Vector3(1,0,0),head.rotation.x).rotated(Vector3(0,1,0),rotation.y)

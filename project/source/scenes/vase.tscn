@@ -16,6 +16,8 @@ point_count = 2
 metadata/_snap_enabled = true
 
 [node name="vase" instance=ExtResource("1_xn160")]
+collision_layer = 6
+collision_mask = 6
 mass = 0.1
 center_of_mass_mode = 1
 center_of_mass = Vector3(2.08167e-16, 0.25, 2.08167e-16)
